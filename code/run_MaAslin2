@@ -1,0 +1,121 @@
+#INPUT: 
+  #features: data frame of abundance counts, with sample names as rownames and taxa as column names
+  #metadata: data frame of other variables, with sample names as rownames and other variables as column names
+  #note: sample names from features and metadata do not need to be in the same order 
+
+#MaAslin2 command with default parameter settings
+maaslin_results <- Maaslin2(
+    input_data = features,          #features
+    input_metadata = metadata,      #metadata
+    output = 'my_output',           #folder you would like output to appear in 
+    min_abundance = 0.0,            #abundance filtering: minimum abundance threshold
+    min_prevalence = 0.1,           #prevalence filtering: minimum prevalence threshold 
+    min_variance = 0.0,             #variance filtering: minimum variance threshold
+    normalization = "TSS",          #normalization method: "TSS", "CLR", "CSS", "NONE", "TMM"
+    transform = "LOG",              #transformation method: "LOG", "LOGIT", "AST", "NONE"
+    analysis_method = "LM",         #type of analysis: "LM", "CPLM", "ZICP", "NEGBIN", "ZINB", linear model is default
+    max_significance = 0.25,        #q-value threshold for significance
+    random_effects = NULL,          #variables that indicate non-independence between samples
+    fixed_effects = NULL,           #variables you want to test for differentially abundant taxa
+    correction = "BH",              #correction method for multiple testing: "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"
+    standardize = TRUE,             #use z-score to scale continuous metadata
+    cores = 1,                      #number of R processes to run in parallel, important for computing time 
+    plot_heatmap = TRUE,            #make heatmap for the significant associations
+    heatmap_first_n = 50,           #maximum of number of heatmaps to make based on top most signicant associations
+    plot_scatter = TRUE,            #make scatterplot of significant associations 
+    max_pngs = 10,                  #maximum number of scatterplots to make based on top most significant associations
+    save_scatter = FALSE,           #save scatterplots to RData file
+    save_models = FALSE,            #save model output to RData file
+    reference = NULL                #the factor you want to use as reference if your variable has more than 2 levels, format as 'variable,reference'
+    )
+
+#without annotations
+maaslin_results < - Maaslin2(
+    input_data = features,
+    input_metadata = metadata,
+    output = "my_output",
+    min_abundance = 0.0,
+    min_prevalence = 0.1,
+    min_variance = 0.0,
+    normalization = "TSS",
+    transform = "LOG",
+    analysis_method = "LM",
+    max_significance = 0.25,
+    random_effects = NULL,
+    fixed_effects = NULL,
+    correction = "BH",
+    standardize = TRUE,
+    cores = 1,
+    plot_heatmap = TRUE,
+    heatmap_first_n = 50,
+    plot_scatter = TRUE,
+    max_pngs = 10,
+    save_scatter = FALSE,
+    save_models = FALSE,
+    reference = NULL
+)
+
+##### POSSIBLE IMPLEMENTATIONS ############################################################################################################
+
+#Comparing microbial abundances across one variable: diagnosis  
+fit_data = Maaslin2(
+    input_data = features,
+    input_metadata = metadata,
+    output = "demo_output",
+    fixed_effects = c("diagnosis"))
+
+#comparing microbial abundances across multiple variables: diagnosis, dysbiosis 
+fit_data2 = Maaslin2(
+    input_data = features,
+    input_metadata = metadata,
+    output = "demo_output2",
+    fixed_effects = c("diagnosis", "dysbiosis"))
+
+#subsetting your data if needed 
+#for example, maybe I only want to look at people diagnosed with CD or UC 
+metadata_CD_UC_only <- subset(metadata, diagnosis %in% c("CD", "UC"))
+fit_data3 = Maaslin2(
+    input_data = features,
+    input_metadata = metadata_CD_UC_only,
+    output = "demo_output3",
+    fixed_effects = c("diagnosis"))
+
+#testing for interaction between variables
+metadata$CD_dysbiosis = (metadata$diagnosis_modified == "CD") *
+                                 metadata$dysbiosis
+metadata$UC_dysbiosis = (metadata$diagnosis_modified == "UC") *
+                                 metadata$dysbiosis
+fit_data4 = Maaslin2(
+    input_data = features, 
+    input_metadata = metadata, 
+    output = "demo_output4", 
+    fixed_effects = c("diagnosis_modified", "dysbiosis", "CD_dysbiosis", "UC_dysbiosis"))
+
+
+#controlling for non-independence between samples: use "random_effects" 
+#in this case, the data has multiple samples from the same subject 
+fit_data5 = Maaslin2(
+    input_data = features, 
+    input_metadata = metadata, 
+    output = "demo_output5", 
+    fixed_effects = c("diagnosis_modified", "dysbiosis"),
+    random_effects = c("subject"))
+
+#applying normalizations to your data
+fit_data6 = Maaslin2(
+    input_data = features, 
+    input_metadata = metadata, 
+    output = "demo_output6", 
+    fixed_effects = c("diagnosis_modified", "dysbiosis"),
+    random_effects = c("subject"),
+    normalization = "CLR") # options are "TSS", "CLR", "CSS", "NONE", "TMM"
+
+#apply prevalence and abundance filters
+fit_data7 = Maaslin2(
+    input_data = features,
+    input_metadata = metadata,
+    output = "demo_output7",
+    fixed_effects = c("diagnosis_modified", "dysbiosis"),
+    random_effects = c("subject"),
+    min_prevalence = 0.1,
+    min_abundance = 0.0001)
