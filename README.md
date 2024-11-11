@@ -8,6 +8,7 @@ You can also use MaAslin2 to:
   - normalize abundance values 
   - check for association between variables
   - apply prevalence and abundance filtering
+  - create heatmaps and scatterplot for analysis of differentially abundant taxa across variables
 
 
 # Installing MaAsLin2
