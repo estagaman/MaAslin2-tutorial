@@ -38,19 +38,27 @@ library(Maaslin2)
 # Input Data
 
 Two tables are necessary: 
+
   1. metadata: a tab or comma-delimited file containing sample IDs as the first column and all additional information collected regarding samples as additional columns
-  2. features: a tab or comma-delimited file containing samples IDs as the first column, taxa as following columns, and abundances as values. Abundances may be normalized beforehand, but it is not necessary. Prevalence and abundance filtering can also be applied directly within MaAslin2 if the user chooses.
+  
+  3. features: a tab or comma-delimited file containing samples IDs as the first column, taxa as following columns, and abundances as values. Abundances may be normalized beforehand, but it is not necessary. Prevalence and abundance filtering can also be applied directly within MaAslin2 if the user chooses.
 
 
 Tutorial Data from the Inflammatory Bowel Disease Multi'omics Database is provided as 
+
   metadata: HMP2_metadata.tsv
+  
   features: HMP2_taxonomy.tsv 
 
 
 # Code
 
 All sample code can be found in the "code" folder of this repository. 
+
     **import_from_tsv.R:** load in metadata and features files in appropriate format for MaAslin2
+    
     **import_sample_data.R:** load in tutorial metadata and features files from internet source
+    
     **installation_setup.R:** installation and directory setup for MaAsLin2
+    
     **run_MaAslin2.R:** main MaAslin2 command and parameters + example implementations
