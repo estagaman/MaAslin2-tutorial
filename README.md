@@ -54,7 +54,11 @@ Tutorial Data from the Inflammatory Bowel Disease Multi'omics Database is provid
 # Code Samples
 
 All sample code can be found in the "code" folder of this repository. 
+
 **import_from_tsv.R:** load in metadata and features files in appropriate format for MaAslin2
-**import_sample_data.R:** load in tutorial metadata and features files from internet source
+
+**import_sample_data:** load in tutorial metadata and features files from internet source 
+
 **installation_setup.R:** installation and directory setup for MaAsLin2
+
 **run_MaAslin2.R:** main MaAslin2 command and parameters + example implementations
